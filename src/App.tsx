@@ -5,6 +5,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { NewNote } from './components/NewNote';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { NoteList } from './components/NoteList';
 
 export type Note = {
   id: string;
@@ -37,13 +38,19 @@ function App() {
 
   const notesWithTags = useMemo(() => {
     return notes.map((note) => {
-      return { ...note, tags: tags.filter((tag) => note.tagIds.includes(tag.id)) };
+      return {
+        ...note,
+        tags: tags.filter((tag) => note.tagIds.includes(tag.id))
+      };
     });
   }, [notes, tags]);
 
   function onCreateNote({ tags, ...data }: NoteData) {
     setNotes((prevNotes) => {
-      return [...prevNotes, { ...data, id: uuidV4(), tagIds: tags.map((tag) => tag.id) }];
+      return [
+        ...prevNotes,
+        { ...data, id: uuidV4(), tagIds: tags.map((tag) => tag.id) }
+      ];
     });
   }
 
@@ -54,8 +61,25 @@ function App() {
   return (
     <Container className="my-4">
       <Routes>
-        <Route path="/" element={<h1>Home</h1>} />
-        <Route path="/new" element={<NewNote onSubmit={onCreateNote} onAddTag={addTag} availableTags={tags} />} />
+        <Route
+          path="/"
+          element={
+            <NoteList
+              notes={notesWithTags}
+              availableTags={tags}
+            />
+          }
+        />
+        <Route
+          path="/new"
+          element={
+            <NewNote
+              onSubmit={onCreateNote}
+              onAddTag={addTag}
+              availableTags={tags}
+            />
+          }
+        />
         <Route path="/:id">
           <Route index element={<h1>Show</h1>} />
           <Route path="edit" element={<h1>Edit</h1>} />
