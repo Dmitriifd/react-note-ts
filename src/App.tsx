@@ -4,9 +4,10 @@ import { Container } from 'react-bootstrap';
 import { v4 as uuidV4 } from 'uuid';
 import { NewNote } from './components/NewNote';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { NoteList } from './components/NoteList';
 import { NoteLayout } from './components/NoteLayout';
+import { Note } from './components/Note';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export type Note = {
   id: string;
@@ -77,7 +78,7 @@ function App() {
           }
         />
         <Route path="/:id" element={<NoteLayout notes={notesWithTags} />}>
-          <Route index element={<h1>Show</h1>} />
+          <Route index element={<Note />} />
           <Route path="edit" element={<h1>Edit</h1>} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
