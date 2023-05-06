@@ -6,6 +6,7 @@ import { NewNote } from './components/NewNote';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NoteList } from './components/NoteList';
+import { NoteLayout } from './components/NoteLayout';
 
 export type Note = {
   id: string;
@@ -63,12 +64,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={
-            <NoteList
-              notes={notesWithTags}
-              availableTags={tags}
-            />
-          }
+          element={<NoteList notes={notesWithTags} availableTags={tags} />}
         />
         <Route
           path="/new"
@@ -80,7 +76,7 @@ function App() {
             />
           }
         />
-        <Route path="/:id">
+        <Route path="/:id" element={<NoteLayout notes={notesWithTags} />}>
           <Route index element={<h1>Show</h1>} />
           <Route path="edit" element={<h1>Edit</h1>} />
         </Route>
