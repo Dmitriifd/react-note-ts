@@ -1,9 +1,11 @@
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useCallback, useMemo, useRef, useState } from 'react';
 import { Button, Col, Form, Row, Stack } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import CreatableReactSelect from 'react-select/creatable';
 import { v4 as uuidV4 } from 'uuid';
 import { NoteData, Tag } from '../App';
+import SimpleMDE from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
 
 type NoteFormProps = {
   onSubmit: (data: NoteData) => void;
@@ -20,16 +22,38 @@ export function NoteForm({
   tags = []
 }: NoteFormProps) {
   const titleRef = useRef<HTMLInputElement>(null);
-  const markdownRef = useRef<HTMLTextAreaElement>(null);
+  // const markdownRef = useRef<HTMLTextAreaElement>(null);
   const [selectedTags, setSelectedTags] = useState<Tag[]>(tags);
   const navigate = useNavigate();
+  const [text, setText] = useState('');
+
+  const onChange = useCallback((value: string) => {
+     setText(value);
+  }, []);
+
+  const options = useMemo(
+    () => ({
+      spellChecker: false,
+      maxHeight: '400px',
+      autofocus: true,
+      placeholder: 'Введите текст...',
+      status: false,
+      autosave: {
+        enabled: true,
+        delay: 1000,
+        uniqueId: 'demo'
+      }
+    }),
+    []
+  );
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     onSubmit({
       title: titleRef.current!.value,
-      markdown: markdownRef.current!.value,
+      // markdown: markdownRef.current!.value,
+      markdown: text,
       tags: selectedTags
     });
 
@@ -73,7 +97,7 @@ export function NoteForm({
             </Form.Group>
           </Col>
         </Row>
-        <Form.Group controlId="markdown">
+        {/* <Form.Group controlId="markdown">
           <Form.Label>Body</Form.Label>
           <Form.Control
             ref={markdownRef}
@@ -82,7 +106,13 @@ export function NoteForm({
             rows={15}
             defaultValue={markdown}
           />
-        </Form.Group>
+        </Form.Group> */}
+        <SimpleMDE
+          value={markdown}
+          onChange={onChange}
+          options={options}
+        />
+
         <Stack direction="horizontal" gap={2} className="justify-content-end">
           <Button type="submit" variant="primary">
             Save
